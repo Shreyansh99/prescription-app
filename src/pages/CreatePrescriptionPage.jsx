@@ -139,8 +139,28 @@ const CreatePrescriptionPage = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-6">Create Prescription</h1>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-white border-b border-gray-200 px-6 py-4">
+        <div className="flex items-center justify-between max-w-7xl mx-auto">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+              <span className="text-white text-sm font-semibold">🏥</span>
+            </div>
+            <h1 className="text-xl font-semibold text-gray-900">Hospital Prescription System</h1>
+          </div>
+          <div className="flex space-x-3">
+            <button className="bg-blue-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-600 transition-colors">
+              + New Prescription
+            </button>
+            <button className="bg-gray-100 text-gray-700 px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-200 transition-colors">
+              📋 View Prescriptions
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-4xl mx-auto p-6">
       
       {showSummary ? (
         <div className="grid grid-cols-1 gap-6">
@@ -216,23 +236,45 @@ const CreatePrescriptionPage = () => {
           </Card>
         </div>
       ) : (
-        <Card>
-          <CardHeader>
-            <CardTitle>Patient Information</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <div className="bg-white rounded-lg shadow-sm border">
+          {/* Form Header */}
+          <div className="px-6 py-4 border-b border-gray-200">
+            <div className="flex items-center space-x-2 mb-2">
+              <div className="w-5 h-5 bg-blue-500 rounded flex items-center justify-center">
+                <span className="text-white text-xs">📋</span>
+              </div>
+              <h2 className="text-lg font-semibold text-gray-900">Hospital Prescription Form</h2>
+            </div>
+            <p className="text-sm text-gray-600">Fill in the patient information to generate a prescription</p>
+          </div>
+
+          {/* Form Content */}
+          <div className="p-6">
+            {/* Registration Number and Date */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div>
+                <label className="block text-sm font-medium text-blue-600 mb-1">📋 Registration Number</label>
+                <div className="text-lg font-semibold text-gray-900">000025</div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-blue-600 mb-1">📅 Date & Time</label>
+                <div className="text-lg font-semibold text-gray-900">{new Date().toLocaleString()}</div>
+              </div>
+            </div>
+
             <form onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Left Column */}
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="patientName">Patient Name *</Label>
+                    <Label htmlFor="patientName" className="text-sm font-medium text-gray-700">Patient Name *</Label>
                     <Input
                       id="patientName"
                       name="patientName"
                       value={formData.patientName}
                       onChange={handleInputChange}
                       placeholder="Enter patient name"
+                      className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                     />
                     {errors.patientName && (
                       <p className="text-sm text-red-500">{errors.patientName}</p>
@@ -377,13 +419,13 @@ const CreatePrescriptionPage = () => {
               </div>
               
               <div className="mt-6">
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? 'Saving...' : 'Save Prescription'}
+                <Button type="submit" className="w-full bg-blue-500 hover:bg-blue-600 text-white" disabled={isLoading}>
+                  {isLoading ? 'Saving...' : 'Create Prescription'}
                 </Button>
               </div>
             </form>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       )}
       
       {/* Print-specific styles */}
@@ -407,6 +449,7 @@ const CreatePrescriptionPage = () => {
           }
         }
       `}</style>
+      </div>
     </div>
   );
 };

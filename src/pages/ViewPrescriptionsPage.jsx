@@ -204,131 +204,202 @@ const ViewPrescriptionsPage = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-6">View Prescriptions</h1>
-      
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle>Filters</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div>
-              <Select 
-                value={filters.gender} 
-                onValueChange={(value) => handleFilterChange('gender', value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Filter by Gender" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Genders</SelectItem>
-                  <SelectItem value="Male">Male</SelectItem>
-                  <SelectItem value="Female">Female</SelectItem>
-                  <SelectItem value="Others">Others</SelectItem>
-                </SelectContent>
-              </Select>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-white border-b border-gray-200 px-6 py-4">
+        <div className="flex items-center justify-between max-w-7xl mx-auto">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+              <span className="text-white text-sm font-semibold">🏥</span>
             </div>
-            
-            <div>
-              <Select 
-                value={filters.department} 
-                onValueChange={(value) => handleFilterChange('department', value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Filter by Department" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Departments</SelectItem>
-                  <SelectItem value="OPD">OPD</SelectItem>
-                  <SelectItem value="IPD">IPD</SelectItem>
-                  <SelectItem value="Emergency">Emergency</SelectItem>
-                </SelectContent>
-              </Select>
+            <h1 className="text-xl font-semibold text-gray-900">Hospital Prescription System</h1>
+          </div>
+          <div className="flex space-x-3">
+            <button className="bg-blue-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-600 transition-colors">
+              + New Prescription
+            </button>
+            <button className="bg-gray-100 text-gray-700 px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-200 transition-colors">
+              📋 View Prescriptions
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto p-6">
+        {/* Page Title */}
+        <div className="mb-6">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Prescriptions</h2>
+          <p className="text-gray-600">View and Export all patient prescriptions</p>
+        </div>
+
+        {/* Filters & Search */}
+        <div className="bg-white rounded-lg shadow-sm border mb-6">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900">Filters & Search</h3>
+          </div>
+          <div className="p-6">
+            {/* Search Bar */}
+            <div className="mb-4">
+              <input
+                type="text"
+                placeholder="Search by name or registration..."
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              />
             </div>
-            
-            <div>
-              <Select 
-                value={filters.type} 
-                onValueChange={(value) => handleFilterChange('type', value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Filter by Type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Types</SelectItem>
-                  <SelectItem value="ANC">ANC</SelectItem>
-                  <SelectItem value="General">General</SelectItem>
-                  <SelectItem value="JSSK">JSSK</SelectItem>
-                </SelectContent>
-              </Select>
+
+            {/* Date Range */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">From Date</label>
+                <input
+                  type="date"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">To Date</label>
+                <input
+                  type="date"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
             </div>
-            
-            <div className="flex items-center">
-              <Button variant="outline" onClick={resetFilters} className="mr-2">
-                Reset Filters
-              </Button>
-              <div className="flex-1"></div>
-              <Button variant="outline" onClick={exportToExcel} className="mr-2">
-                Export Excel
-              </Button>
-              <Button variant="outline" onClick={exportToPDF}>
-                Export PDF
-              </Button>
+
+            {/* Filter Dropdowns */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Gender</label>
+                <Select
+                  value={filters.gender}
+                  onValueChange={(value) => handleFilterChange('gender', value)}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="All Genders" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Genders</SelectItem>
+                    <SelectItem value="Male">Male</SelectItem>
+                    <SelectItem value="Female">Female</SelectItem>
+                    <SelectItem value="Others">Others</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
+                <Select
+                  value={filters.department}
+                  onValueChange={(value) => handleFilterChange('department', value)}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="All Departments" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Departments</SelectItem>
+                    <SelectItem value="OPD">OPD</SelectItem>
+                    <SelectItem value="IPD">IPD</SelectItem>
+                    <SelectItem value="Emergency">Emergency</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                <Select
+                  value={filters.type}
+                  onValueChange={(value) => handleFilterChange('type', value)}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="All Types" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Types</SelectItem>
+                    <SelectItem value="ANC">ANC</SelectItem>
+                    <SelectItem value="General">General</SelectItem>
+                    <SelectItem value="JSSK">JSSK</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex items-center justify-between">
+              <button
+                onClick={resetFilters}
+                className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+              >
+                ❌ Clear All Filters
+              </button>
+              <div className="text-sm text-gray-600">
+                Showing {filteredPrescriptions.length} prescriptions
+              </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
       
-      <Card>
-        <CardHeader>
-          <CardTitle>Prescriptions</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {loading ? (
-            <div className="text-center py-4">Loading prescriptions...</div>
-          ) : filteredPrescriptions.length === 0 ? (
-            <div className="text-center py-4">No prescriptions found</div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="bg-gray-100">
-                    <th className="border p-2 text-left">Reg. No.</th>
-                    <th className="border p-2 text-left">Date/Time</th>
-                    <th className="border p-2 text-left">Patient Name</th>
-                    <th className="border p-2 text-left">Age</th>
-                    <th className="border p-2 text-left">Gender</th>
-                    <th className="border p-2 text-left">Department</th>
-                    <th className="border p-2 text-left">Type</th>
-                    <th className="border p-2 text-left">Room No.</th>
-                    <th className="border p-2 text-left">Address</th>
-                    <th className="border p-2 text-left">Aadhar</th>
-                    <th className="border p-2 text-left">Mobile</th>
+        {/* Prescriptions Table */}
+        <div className="bg-white rounded-lg shadow-sm border">
+          <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">Prescriptions ({filteredPrescriptions.length})</h3>
+              <p className="text-sm text-gray-600">Showing {filteredPrescriptions.length} prescriptions</p>
+            </div>
+            <div className="flex space-x-2">
+              <button className="text-orange-600 hover:text-orange-700 text-sm font-medium">
+                📄 Export PDF (24)
+              </button>
+              <button className="text-green-600 hover:text-green-700 text-sm font-medium">
+                📊 Export Excel (24)
+              </button>
+            </div>
+          </div>
+
+          <div className="overflow-x-auto">
+            {loading ? (
+              <div className="text-center py-8">
+                <p>Loading prescriptions...</p>
+              </div>
+            ) : filteredPrescriptions.length === 0 ? (
+              <div className="text-center py-8">
+                <p className="text-gray-500">No prescriptions found</p>
+              </div>
+            ) : (
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Registration No.</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Patient Name</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Age</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gender</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Room No.</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
                   </tr>
                 </thead>
-                <tbody>
-                  {filteredPrescriptions.map((prescription) => (
-                    <tr key={prescription.registrationNumber} className="hover:bg-gray-50">
-                      <td className="border p-2">{prescription.registrationNumber}</td>
-                      <td className="border p-2">{formatDate(prescription.dateTime)}</td>
-                      <td className="border p-2">{prescription.patientName}</td>
-                      <td className="border p-2">{prescription.age}</td>
-                      <td className="border p-2">{prescription.gender}</td>
-                      <td className="border p-2">{prescription.department}</td>
-                      <td className="border p-2">{prescription.type}</td>
-                      <td className="border p-2">{prescription.roomNumber || '-'}</td>
-                      <td className="border p-2">{prescription.address || '-'}</td>
-                      <td className="border p-2">{prescription.aadharNumber || '-'}</td>
-                      <td className="border p-2">{prescription.mobileNumber || '-'}</td>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {filteredPrescriptions.map((prescription, index) => (
+                    <tr key={prescription.registrationNumber} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-600 font-medium">{prescription.registrationNumber}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{prescription.patientName}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{prescription.age}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{prescription.gender}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{prescription.roomNumber || 'N/A'}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{prescription.department}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                          {prescription.type}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{formatDate(prescription.dateTime)}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
