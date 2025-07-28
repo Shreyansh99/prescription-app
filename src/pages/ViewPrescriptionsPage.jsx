@@ -13,9 +13,9 @@ const ViewPrescriptionsPage = () => {
   const [filteredPrescriptions, setFilteredPrescriptions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({
-    gender: '',
-    department: '',
-    type: ''
+    gender: 'all',
+    department: 'all',
+    type: 'all'
   });
 
   useEffect(() => {
@@ -46,15 +46,15 @@ const ViewPrescriptionsPage = () => {
   const applyFilters = () => {
     let filtered = [...prescriptions];
 
-    if (filters.gender) {
+    if (filters.gender && filters.gender !== 'all') {
       filtered = filtered.filter(p => p.gender === filters.gender);
     }
 
-    if (filters.department) {
+    if (filters.department && filters.department !== 'all') {
       filtered = filtered.filter(p => p.department === filters.department);
     }
 
-    if (filters.type) {
+    if (filters.type && filters.type !== 'all') {
       filtered = filtered.filter(p => p.type === filters.type);
     }
 
@@ -70,9 +70,9 @@ const ViewPrescriptionsPage = () => {
 
   const resetFilters = () => {
     setFilters({
-      gender: '',
-      department: '',
-      type: ''
+      gender: 'all',
+      department: 'all',
+      type: 'all'
     });
   };
 
@@ -222,7 +222,7 @@ const ViewPrescriptionsPage = () => {
                   <SelectValue placeholder="Filter by Gender" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Genders</SelectItem>
+                  <SelectItem value="all">All Genders</SelectItem>
                   <SelectItem value="Male">Male</SelectItem>
                   <SelectItem value="Female">Female</SelectItem>
                   <SelectItem value="Others">Others</SelectItem>
@@ -239,7 +239,7 @@ const ViewPrescriptionsPage = () => {
                   <SelectValue placeholder="Filter by Department" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Departments</SelectItem>
+                  <SelectItem value="all">All Departments</SelectItem>
                   <SelectItem value="OPD">OPD</SelectItem>
                   <SelectItem value="IPD">IPD</SelectItem>
                   <SelectItem value="Emergency">Emergency</SelectItem>
@@ -256,7 +256,7 @@ const ViewPrescriptionsPage = () => {
                   <SelectValue placeholder="Filter by Type" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Types</SelectItem>
+                  <SelectItem value="all">All Types</SelectItem>
                   <SelectItem value="ANC">ANC</SelectItem>
                   <SelectItem value="General">General</SelectItem>
                   <SelectItem value="JSSK">JSSK</SelectItem>
