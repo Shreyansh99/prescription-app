@@ -4,6 +4,9 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../components/ui/card';
 import { useToast } from '../components/ui/use-toast';
+import { FormField } from '../components/ui/form-field';
+import { Alert, AlertDescription } from '../components/ui/alert';
+import { Spinner } from '../components/ui/spinner';
 import { validatePassword, validateUsername } from '../utils/validation';
 
 const AdminRegistrationPage = ({ onRegistrationComplete }) => {
@@ -101,65 +104,105 @@ const AdminRegistrationPage = ({ onRegistrationComplete }) => {
   }
 
   return (
-    <div className="flex items-center justify-center h-screen">
-      <Card className="w-full max-w-sm">
-        <CardHeader>
-          <CardTitle>Admin Registration</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="mb-4 text-muted-foreground">
-            Welcome to the first-time setup. Please create an admin account to continue.
-          </p>
-          <form onSubmit={handleRegisterAdmin}>
-            <div className="grid gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="username">Username</Label>
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 flex items-center justify-center p-6">
+      <div className="w-full max-w-md">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+            <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" clipRule="evenodd" />
+            </svg>
+          </div>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Hospital Prescription System</h1>
+          <p className="text-gray-600">First-time setup - Create admin account</p>
+        </div>
+
+        <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
+          <CardHeader className="space-y-1 pb-6">
+            <CardTitle className="text-2xl font-bold text-center text-gray-900">Admin Registration</CardTitle>
+            <p className="text-center text-gray-600">
+              Welcome to the first-time setup. Please create an admin account to continue.
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <form onSubmit={handleRegisterAdmin} className="space-y-6">
+              <FormField
+                label="Username"
+                required
+                error={errors.username}
+                helpText="Choose a unique username for admin access"
+              >
                 <Input
                   id="username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  placeholder="Enter username"
+                  placeholder="Enter admin username"
+                  className="transition-all duration-200 focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                  disabled={isLoading}
                 />
-                {errors.username && (
-                  <p className="text-sm text-red-500">{errors.username}</p>
-                )}
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+              </FormField>
+
+              <FormField
+                label="Password"
+                required
+                error={errors.password}
+                helpText="Password must be at least 8 characters with uppercase, lowercase, and numbers"
+              >
                 <Input
                   id="password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter password"
+                  placeholder="Enter secure password"
+                  className="transition-all duration-200 focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                  disabled={isLoading}
                 />
-                {errors.password && (
-                  <p className="text-sm text-red-500">{errors.password}</p>
-                )}
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
+              </FormField>
+
+              <FormField
+                label="Confirm Password"
+                required
+                error={errors.confirmPassword}
+                helpText="Re-enter your password to confirm"
+              >
                 <Input
                   id="confirmPassword"
                   type="password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Confirm password"
+                  placeholder="Confirm your password"
+                  className="transition-all duration-200 focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                  disabled={isLoading}
                 />
-                {errors.confirmPassword && (
-                  <p className="text-sm text-red-500">{errors.confirmPassword}</p>
+              </FormField>
+
+              <Button
+                className="w-full bg-gradient-to-r from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 h-12 text-lg font-medium mt-6"
+                type="submit"
+                disabled={isLoading || !username || !password || !confirmPassword}
+              >
+                {isLoading ? (
+                  <div className="flex items-center gap-2">
+                    <Spinner size="sm" />
+                    <span>Creating Admin Account...</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <span>👑</span>
+                    <span>Create Admin Account</span>
+                  </div>
                 )}
-              </div>
-            </div>
-            
-            <Button className="mt-6 w-full" type="submit" disabled={isLoading}>
-              {isLoading ? 'Creating Account...' : 'Create Admin Account'}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+
+        <div className="text-center mt-6">
+          <p className="text-sm text-gray-500">
+            This will be your primary admin account for system management
+          </p>
+        </div>
+      </div>
     </div>
   );
 };

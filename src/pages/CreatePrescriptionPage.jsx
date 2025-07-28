@@ -5,6 +5,10 @@ import { Label } from '../components/ui/label';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter, CardDescription } from '../components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { useToast } from '../components/ui/use-toast';
+import { FormField } from '../components/ui/form-field';
+import { Spinner } from '../components/ui/spinner';
+import { Alert, AlertDescription } from '../components/ui/alert';
+import { Badge } from '../components/ui/badge';
 import { validateAadhar, validateMobile } from '../utils/validation';
 
 const CreatePrescriptionPage = () => {
@@ -140,26 +144,6 @@ const CreatePrescriptionPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-6 py-4">
-        <div className="flex items-center justify-between max-w-7xl mx-auto">
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-              <span className="text-white text-sm font-semibold">🏥</span>
-            </div>
-            <h1 className="text-xl font-semibold text-gray-900">Hospital Prescription System</h1>
-          </div>
-          <div className="flex space-x-3">
-            <button className="bg-blue-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-600 transition-colors">
-              + New Prescription
-            </button>
-            <button className="bg-gray-100 text-gray-700 px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-200 transition-colors">
-              📋 View Prescriptions
-            </button>
-          </div>
-        </div>
-      </div>
-
       <div className="max-w-4xl mx-auto p-6">
       
       {showSummary ? (
@@ -236,29 +220,43 @@ const CreatePrescriptionPage = () => {
           </Card>
         </div>
       ) : (
-        <div className="bg-white rounded-lg shadow-sm border">
+        <div className="bg-white rounded-xl shadow-lg border border-gray-200">
           {/* Form Header */}
-          <div className="px-6 py-4 border-b border-gray-200">
-            <div className="flex items-center space-x-2 mb-2">
-              <div className="w-5 h-5 bg-blue-500 rounded flex items-center justify-center">
-                <span className="text-white text-xs">📋</span>
+          <div className="px-6 py-5 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+            <div className="flex items-center space-x-3 mb-2">
+              <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center shadow-sm">
+                <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 0v12h8V4H6z" clipRule="evenodd" />
+                </svg>
               </div>
-              <h2 className="text-lg font-semibold text-gray-900">Hospital Prescription Form</h2>
+              <div>
+                <h2 className="text-xl font-semibold text-gray-900">Hospital Prescription Form</h2>
+                <p className="text-sm text-gray-600">Fill in the patient information to generate a prescription</p>
+              </div>
             </div>
-            <p className="text-sm text-gray-600">Fill in the patient information to generate a prescription</p>
           </div>
 
           {/* Form Content */}
           <div className="p-6">
             {/* Registration Number and Date */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-              <div>
-                <label className="block text-sm font-medium text-blue-600 mb-1">📋 Registration Number</label>
-                <div className="text-lg font-semibold text-gray-900">000025</div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                <label className="text-sm font-medium text-blue-700 mb-2 flex items-center gap-2">
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 0v12h8V4H6z" clipRule="evenodd" />
+                  </svg>
+                  Registration Number
+                </label>
+                <div className="text-2xl font-bold text-blue-900">000025</div>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-blue-600 mb-1">📅 Date & Time</label>
-                <div className="text-lg font-semibold text-gray-900">{new Date().toLocaleString()}</div>
+              <div className="bg-green-50 rounded-lg p-4 border border-green-200">
+                <label className="text-sm font-medium text-green-700 mb-2 flex items-center gap-2">
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
+                  </svg>
+                  Date & Time
+                </label>
+                <div className="text-lg font-semibold text-green-900">{new Date().toLocaleString()}</div>
               </div>
             </div>
 
@@ -266,42 +264,52 @@ const CreatePrescriptionPage = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Left Column */}
                 <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="patientName" className="text-sm font-medium text-gray-700">Patient Name *</Label>
+                  <FormField
+                    label="Patient Name"
+                    required
+                    error={errors.patientName}
+                    helpText="Enter the full name of the patient"
+                  >
                     <Input
                       id="patientName"
                       name="patientName"
                       value={formData.patientName}
                       onChange={handleInputChange}
-                      placeholder="Enter patient name"
-                      className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                      placeholder="Enter patient full name"
+                      className="transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
-                    {errors.patientName && (
-                      <p className="text-sm text-red-500">{errors.patientName}</p>
-                    )}
-                  </div>
+                  </FormField>
                   
-                  <div className="space-y-2">
-                    <Label htmlFor="age">Age *</Label>
+                  <FormField
+                    label="Age"
+                    required
+                    error={errors.age}
+                    helpText="Patient's age in years"
+                  >
                     <Input
                       id="age"
                       name="age"
+                      type="number"
                       value={formData.age}
                       onChange={handleInputChange}
-                      placeholder="Enter age"
+                      placeholder="Enter age in years"
+                      min="0"
+                      max="150"
+                      className="transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
-                    {errors.age && (
-                      <p className="text-sm text-red-500">{errors.age}</p>
-                    )}
-                  </div>
+                  </FormField>
                   
-                  <div className="space-y-2">
-                    <Label htmlFor="gender">Gender *</Label>
-                    <Select 
-                      value={formData.gender} 
+                  <FormField
+                    label="Gender"
+                    required
+                    error={errors.gender}
+                    helpText="Select patient's gender"
+                  >
+                    <Select
+                      value={formData.gender}
                       onValueChange={(value) => handleSelectChange('gender', value)}
                     >
-                      <SelectTrigger id="gender">
+                      <SelectTrigger className="transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         <SelectValue placeholder="Select gender" />
                       </SelectTrigger>
                       <SelectContent>
@@ -310,30 +318,28 @@ const CreatePrescriptionPage = () => {
                         <SelectItem value="Others">Others</SelectItem>
                       </SelectContent>
                     </Select>
-                    {errors.gender && (
-                      <p className="text-sm text-red-500">{errors.gender}</p>
-                    )}
-                  </div>
+                  </FormField>
                   
-                  <div className="space-y-2">
-                    <Label htmlFor="department">Department *</Label>
-                    <Select 
-                      value={formData.department} 
+                  <FormField
+                    label="Department"
+                    required
+                    error={errors.department}
+                    helpText="Select the hospital department"
+                  >
+                    <Select
+                      value={formData.department}
                       onValueChange={(value) => handleSelectChange('department', value)}
                     >
-                      <SelectTrigger id="department">
+                      <SelectTrigger className="transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         <SelectValue placeholder="Select department" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="OPD">OPD</SelectItem>
-                        <SelectItem value="IPD">IPD</SelectItem>
+                        <SelectItem value="OPD">OPD (Outpatient Department)</SelectItem>
+                        <SelectItem value="IPD">IPD (Inpatient Department)</SelectItem>
                         <SelectItem value="Emergency">Emergency</SelectItem>
                       </SelectContent>
                     </Select>
-                    {errors.department && (
-                      <p className="text-sm text-red-500">{errors.department}</p>
-                    )}
-                  </div>
+                  </FormField>
                   
                   <div className="space-y-2">
                     <Label htmlFor="type">Type *</Label>
@@ -418,9 +424,23 @@ const CreatePrescriptionPage = () => {
                 </div>
               </div>
               
-              <div className="mt-6">
-                <Button type="submit" className="w-full bg-blue-500 hover:bg-blue-600 text-white" disabled={isLoading}>
-                  {isLoading ? 'Saving...' : 'Create Prescription'}
+              <div className="mt-8 pt-6 border-t border-gray-200">
+                <Button
+                  type="submit"
+                  className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 h-12 text-lg font-medium"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <div className="flex items-center gap-2">
+                      <Spinner size="sm" />
+                      <span>Creating Prescription...</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <span>📋</span>
+                      <span>Create Prescription</span>
+                    </div>
+                  )}
                 </Button>
               </div>
             </form>

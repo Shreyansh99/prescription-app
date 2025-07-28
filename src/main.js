@@ -52,10 +52,16 @@ const createWindow = () => {
   // Disable Autofill warnings in DevTools and handle other console errors
   mainWindow.webContents.on('did-finish-load', () => {
     mainWindow.webContents.executeJavaScript(`
-      // Suppress Autofill errors which are not relevant to our app
+      // Suppress Autofill errors and JSX warnings which are not relevant to our app
       console.error = (function(originalFunction) {
         return function(message) {
-          if (message && (message.includes('Autofill.enable') || message.includes('Autofill.setAddresses'))) {
+          if (message && (
+            message.includes('Autofill.enable') ||
+            message.includes('Autofill.setAddresses') ||
+            message.includes('non-boolean attribute') ||
+            message.includes('jsx') ||
+            message.includes('global')
+          )) {
             return;
           }
           return originalFunction.apply(this, arguments);

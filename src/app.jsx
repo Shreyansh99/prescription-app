@@ -11,19 +11,20 @@ import { useToast } from './components/ui/use-toast';
 import ErrorBoundary from './components/ErrorBoundary';
 import ProtectedRoute from './components/ProtectedRoute';
 import Navigation from './components/Navigation';
+import { SkipNav } from './components/ui/skip-nav';
 
 // Create a toast function that can be used globally
 const ToastProvider = ({ children }) => {
   const { toast } = useToast();
-  
+
   // Expose toast function to window for global access
-  React.useEffect(() => {
+  useEffect(() => {
     window.toast = toast;
     return () => {
       window.toast = undefined;
     };
   }, [toast]);
-  
+
   return children;
 };
 
@@ -92,8 +93,9 @@ const AppContent = ({ user, setUser, adminExists, setAdminExists }) => {
 
   return (
     <>
+      <SkipNav />
       <Navigation user={user} setUser={setUser} />
-      <div className="min-h-screen pt-16">
+      <main id="main-content" className="min-h-screen pt-16">
         <Routes>
           {/* Public routes */}
           <Route path="/admin-registration" element={
@@ -127,7 +129,7 @@ const AppContent = ({ user, setUser, adminExists, setAdminExists }) => {
           
           <Route path="/view-prescriptions" element={
             <ErrorBoundary>
-              <ProtectedRoute user={user} adminExists={adminExists} allowedRoles={['moderator']}>
+              <ProtectedRoute user={user} adminExists={adminExists} allowedRoles={['moderator', 'admin']}>
                 <ViewPrescriptionsPage />
               </ProtectedRoute>
             </ErrorBoundary>
@@ -157,7 +159,7 @@ const AppContent = ({ user, setUser, adminExists, setAdminExists }) => {
               user.role === 'admin' ? '/user-management' : '/create-prescription'} replace />
           } />
         </Routes>
-      </div>
+      </main>
       <Toaster />
     </>
   );
