@@ -94,7 +94,7 @@ const AppContent = ({ user, setUser, adminExists, setAdminExists }) => {
   return (
     <>
       <Navigation user={user} setUser={setUser} />
-      <main id="main-content" className="min-h-screen">
+      <main id="main-content" className="min-h-screen pt-16">
         <Routes>
           {/* Public routes */}
           <Route path="/admin-registration" element={
