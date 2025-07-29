@@ -93,9 +93,8 @@ const AppContent = ({ user, setUser, adminExists, setAdminExists }) => {
 
   return (
     <>
-      <SkipNav />
       <Navigation user={user} setUser={setUser} />
-      <main id="main-content" className="min-h-screen pt-16">
+      <main id="main-content" className="min-h-screen">
         <Routes>
           {/* Public routes */}
           <Route path="/admin-registration" element={
