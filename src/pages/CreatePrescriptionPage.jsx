@@ -48,6 +48,7 @@ const CreatePrescriptionPage = () => {
     address: '',
     aadharNumber: '',
     mobileNumber: '',
+    paymentMethod: '',
   });
 
   const handleInputChange = (e) => {
@@ -74,6 +75,7 @@ const CreatePrescriptionPage = () => {
     if (!formData.gender) newErrors.gender = 'Gender is required';
     if (!formData.department) newErrors.department = 'Department is required';
     if (!formData.type) newErrors.type = 'Type is required';
+    if (!formData.paymentMethod) newErrors.paymentMethod = 'Payment method is required';
     
     // Optional fields with validation
     if (formData.roomNumber && (isNaN(formData.roomNumber) || parseInt(formData.roomNumber) <= 0)) {
@@ -103,10 +105,11 @@ const CreatePrescriptionPage = () => {
     
     setIsLoading(true);
     try {
-      // Add date/time
+      // Add date/time and registration number
       const prescriptionData = {
         ...formData,
         dateTime: new Date().toISOString(),
+        registrationNumber: nextRegNumber,
       };
       
       // Note: The main process will sanitize the data before saving
@@ -121,6 +124,9 @@ const CreatePrescriptionPage = () => {
       // Show the summary
       setSavedPrescription(result);
       setShowSummary(true);
+      
+      // Increment the registration number for next prescription
+      setNextRegNumber(nextRegNumber + 1);
       
     } catch (error) {
       toast({
@@ -149,6 +155,7 @@ const CreatePrescriptionPage = () => {
       address: '',
       aadharNumber: '',
       mobileNumber: '',
+      paymentMethod: '',
     });
     setErrors({});
     setShowSummary(false);
@@ -187,13 +194,13 @@ const CreatePrescriptionPage = () => {
         <div className="grid grid-cols-1 gap-6">
           {/* Navigation Buttons */}
           <div className="flex justify-between mb-4">
-            <Button variant="outline" onClick={handleNavigateToCreate} className="px-4 flex items-center gap-2">
+            <Button variant="outline" onClick={handleNavigateToCreate} className="px-4 flex items-center gap-2 border-gray-300 hover:bg-gray-50">
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+                <path fillRule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clipRule="evenodd" />
               </svg>
-              Create Prescription
+              Back to Form
             </Button>
-            <Button onClick={handlePrint} className="bg-blue-600 hover:bg-blue-700 px-4 flex items-center gap-2">
+            <Button variant="outline" onClick={handlePrint} className="px-4 flex items-center gap-2 border-gray-300 hover:bg-gray-50">
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clipRule="evenodd" />
               </svg>
@@ -244,7 +251,14 @@ const CreatePrescriptionPage = () => {
                     <div className="font-medium">{savedPrescription.mobileNumber}</div>
                     
                     <div className="text-gray-600">Room No:</div>
-                    <div className="font-medium">{savedPrescription.roomNumber || 'd'}</div>
+                    <div className="font-medium">{savedPrescription.roomNumber || 'N/A'}</div>
+                    
+                    <div className="text-gray-600">Payment:</div>
+                    <div className="font-medium">
+                      <span className="bg-green-100 text-green-800 px-2 py-0.5 rounded text-sm">
+                        {savedPrescription.paymentMethod}
+                      </span>
+                    </div>
                   </div>
                 </div>
                 
@@ -378,13 +392,13 @@ const CreatePrescriptionPage = () => {
                       value={formData.gender}
                       onValueChange={(value) => handleSelectChange('gender', value)}
                     >
-                      <SelectTrigger className="transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                      <SelectTrigger className="transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 hover:border-blue-300">
                         <SelectValue placeholder="Select gender" />
                       </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Male">Male</SelectItem>
-                        <SelectItem value="Female">Female</SelectItem>
-                        <SelectItem value="Others">Others</SelectItem>
+                      <SelectContent className="min-w-[150px] border-blue-300">
+                        <SelectItem value="Male" className="hover:bg-blue-100 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white">Male</SelectItem>
+                        <SelectItem value="Female" className="hover:bg-blue-100 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white">Female</SelectItem>
+                        <SelectItem value="Others" className="hover:bg-blue-100 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white">Others</SelectItem>
                       </SelectContent>
                     </Select>
                   </FormField>
@@ -402,10 +416,10 @@ const CreatePrescriptionPage = () => {
                       <SelectTrigger className="transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         <SelectValue placeholder="Select department" />
                       </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="OPD">OPD (Outpatient Department)</SelectItem>
-                        <SelectItem value="IPD">IPD (Inpatient Department)</SelectItem>
-                        <SelectItem value="Emergency">Emergency</SelectItem>
+                      <SelectContent className="min-w-[250px] border-blue-300">
+                        <SelectItem value="OPD" className="hover:bg-blue-100 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white">OPD (Outpatient Department)</SelectItem>
+                        <SelectItem value="IPD" className="hover:bg-blue-100 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white">IPD (Inpatient Department)</SelectItem>
+                        <SelectItem value="Emergency" className="hover:bg-blue-100 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white">Emergency</SelectItem>
                       </SelectContent>
                     </Select>
                   </FormField>
@@ -416,13 +430,13 @@ const CreatePrescriptionPage = () => {
                       value={formData.type} 
                       onValueChange={(value) => handleSelectChange('type', value)}
                     >
-                      <SelectTrigger id="type">
+                      <SelectTrigger id="type" className="transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 hover:border-blue-300">
                         <SelectValue placeholder="Select type" />
                       </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="ANC">ANC</SelectItem>
-                        <SelectItem value="General">General</SelectItem>
-                        <SelectItem value="JSSK">JSSK</SelectItem>
+                      <SelectContent className="min-w-[150px] border-blue-300">
+                        <SelectItem value="ANC" className="hover:bg-blue-100 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white">ANC</SelectItem>
+                        <SelectItem value="General" className="hover:bg-blue-100 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white">General</SelectItem>
+                        <SelectItem value="JSSK" className="hover:bg-blue-100 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white">JSSK</SelectItem>
                       </SelectContent>
                     </Select>
                     {errors.type && (
@@ -434,13 +448,14 @@ const CreatePrescriptionPage = () => {
                 {/* Right Column */}
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="roomNumber">Room Number (Optional)</Label>
+                    <Label htmlFor="roomNumber">Room Number</Label>
                     <Input
                       id="roomNumber"
                       name="roomNumber"
                       value={formData.roomNumber}
                       onChange={handleInputChange}
                       placeholder="Enter room number"
+                      className="transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 hover:border-blue-300"
                     />
                     {errors.roomNumber && (
                       <p className="text-sm text-red-500">{errors.roomNumber}</p>
@@ -448,13 +463,14 @@ const CreatePrescriptionPage = () => {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="address">Address (Optional)</Label>
+                    <Label htmlFor="address">Address</Label>
                     <Input
                       id="address"
                       name="address"
                       value={formData.address}
                       onChange={handleInputChange}
                       placeholder="Enter address"
+                      className="transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 hover:border-blue-300"
                     />
                     {errors.address && (
                       <p className="text-sm text-red-500">{errors.address}</p>
@@ -462,7 +478,7 @@ const CreatePrescriptionPage = () => {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="aadharNumber">Aadhar Number (Optional)</Label>
+                    <Label htmlFor="aadharNumber">Aadhar Number</Label>
                     <Input
                       id="aadharNumber"
                       name="aadharNumber"
@@ -470,6 +486,7 @@ const CreatePrescriptionPage = () => {
                       onChange={handleInputChange}
                       placeholder="Enter 12-digit Aadhar number"
                       maxLength={12}
+                      className="transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 hover:border-blue-300"
                     />
                     {errors.aadharNumber && (
                       <p className="text-sm text-red-500">{errors.aadharNumber}</p>
@@ -477,7 +494,7 @@ const CreatePrescriptionPage = () => {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="mobileNumber">Mobile Number (Optional)</Label>
+                    <Label htmlFor="mobileNumber">Mobile Number</Label>
                     <Input
                       id="mobileNumber"
                       name="mobileNumber"
@@ -485,9 +502,29 @@ const CreatePrescriptionPage = () => {
                       onChange={handleInputChange}
                       placeholder="Enter 10-digit mobile number"
                       maxLength={10}
+                      className="transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 hover:border-blue-300"
                     />
                     {errors.mobileNumber && (
                       <p className="text-sm text-red-500">{errors.mobileNumber}</p>
+                    )}
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="paymentMethod">Payment Method *</Label>
+                    <Select 
+                      value={formData.paymentMethod} 
+                      onValueChange={(value) => handleSelectChange('paymentMethod', value)}
+                    >
+                      <SelectTrigger id="paymentMethod" className="transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 hover:border-blue-300">
+                        <SelectValue placeholder="Select payment method" />
+                      </SelectTrigger>
+                      <SelectContent className="min-w-[180px] border-blue-300">
+                        <SelectItem value="Cash" className="hover:bg-blue-100 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white">Cash</SelectItem>
+                        <SelectItem value="Online" className="hover:bg-blue-100 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white">Online</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    {errors.paymentMethod && (
+                      <p className="text-sm text-red-500">{errors.paymentMethod}</p>
                     )}
                   </div>
                 </div>
