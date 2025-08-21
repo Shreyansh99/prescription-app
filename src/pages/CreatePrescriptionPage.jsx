@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -17,7 +17,26 @@ const CreatePrescriptionPage = () => {
   const [showSummary, setShowSummary] = useState(false);
   const [savedPrescription, setSavedPrescription] = useState(null);
   const [errors, setErrors] = useState({});
+  const [nextRegNumber, setNextRegNumber] = useState(30); // Starting with 30 as shown in the image
   
+  // Fetch the next registration number when component mounts
+  useEffect(() => {
+    const fetchNextRegNumber = async () => {
+      try {
+        const prescriptions = await window.api.getPrescriptions();
+        if (prescriptions && prescriptions.length > 0) {
+          // Find the maximum registration number and add 1
+          const maxRegNumber = Math.max(...prescriptions.map(p => p.registrationNumber || 0));
+          setNextRegNumber(maxRegNumber + 1);
+        }
+      } catch (error) {
+        console.error('Error fetching prescriptions:', error);
+      }
+    };
+    
+    fetchNextRegNumber();
+  }, []);
+
   // Form state
   const [formData, setFormData] = useState({
     patientName: '',
@@ -153,7 +172,7 @@ const CreatePrescriptionPage = () => {
             <CardHeader>
               <CardTitle>Prescription Summary</CardTitle>
               <CardDescription>
-                Registration Number: {savedPrescription.registrationNumber}
+                Registration Number: NO. {String(savedPrescription.registrationNumber).padStart(6, '0')}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -247,7 +266,7 @@ const CreatePrescriptionPage = () => {
                   </svg>
                   Registration Number
                 </label>
-                <div className="text-2xl font-bold text-blue-900">000025</div>
+                <div className="text-2xl font-bold text-blue-900">NO. {String(nextRegNumber).padStart(6, '0')}</div>
               </div>
               <div className="bg-green-50 rounded-lg p-4 border border-green-200">
                 <label className="text-sm font-medium text-green-700 mb-2 flex items-center gap-2">
