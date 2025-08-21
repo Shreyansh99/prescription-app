@@ -167,75 +167,107 @@ const CreatePrescriptionPage = () => {
       
       {showSummary ? (
         <div className="grid grid-cols-1 gap-6">
+          {/* Navigation Buttons */}
+          <div className="flex justify-between mb-4">
+            <Button variant="outline" onClick={handleCreateNew} className="px-4 flex items-center gap-2">
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clipRule="evenodd" />
+              </svg>
+              Back to Form
+            </Button>
+            <Button onClick={handlePrint} className="bg-blue-600 hover:bg-blue-700 px-4 flex items-center gap-2">
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clipRule="evenodd" />
+              </svg>
+              Print Prescription
+            </Button>
+          </div>
+          
           {/* Prescription Summary */}
-          <Card className="prescription-summary">
-            <CardHeader>
-              <CardTitle>Prescription Summary</CardTitle>
-              <CardDescription>
-                Registration Number: NO. {String(savedPrescription.registrationNumber).padStart(6, '0')}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Card className="prescription-summary bg-white shadow-md border border-gray-200">
+            <div className="flex justify-between items-center p-4 bg-blue-50 border-b border-gray-200">
+              <div className="flex items-center gap-3">
+                <div className="text-blue-600">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM18 19H6C5.45 19 5 18.55 5 18V6C5 5.45 5.45 5 6 5H18C18.55 5 19 5.45 19 6V18C19 18.55 18.55 19 18 19Z" fill="currentColor"/>
+                    <path d="M12 17C14.7614 17 17 14.7614 17 12C17 9.23858 14.7614 7 12 7C9.23858 7 7 9.23858 7 12C7 14.7614 9.23858 17 12 17Z" fill="currentColor"/>
+                  </svg>
+                </div>
                 <div>
-                  <h3 className="font-semibold">Patient Information</h3>
-                  <div className="space-y-2 mt-2">
-                    <div>
-                      <span className="font-medium">Name:</span> {savedPrescription.patientName}
-                    </div>
-                    <div>
-                      <span className="font-medium">Age:</span> {savedPrescription.age}
-                    </div>
-                    <div>
-                      <span className="font-medium">Gender:</span> {savedPrescription.gender}
-                    </div>
-                    <div>
-                      <span className="font-medium">Date/Time:</span> {formatDate(savedPrescription.dateTime)}
-                    </div>
-                    {savedPrescription.address && (
-                      <div>
-                        <span className="font-medium">Address:</span> {savedPrescription.address}
-                      </div>
-                    )}
+                  <h2 className="text-lg font-bold text-gray-900">City General Hospital</h2>
+                  <p className="text-sm text-gray-600">Healthcare Excellence Since 1985</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-sm font-medium text-gray-600">NO. {String(savedPrescription.registrationNumber).padStart(6, '0')}</p>
+              </div>
+            </div>
+            
+            <div className="p-6">
+              <div className="text-center mb-6">
+                <h1 className="text-2xl font-bold text-gray-900 uppercase">PRESCRIPTION</h1>
+                <p className="text-sm text-gray-600 mt-1">Date: {formatDate(savedPrescription.dateTime)}</p>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div className="border-b pb-4 md:border-b-0 md:border-r md:pr-6">
+                  <h3 className="font-bold text-gray-800 mb-3 border-b pb-2">Patient Information</h3>
+                  <div className="grid grid-cols-[120px_1fr] gap-y-2">
+                    <div className="text-gray-600">Name:</div>
+                    <div className="font-medium">{savedPrescription.patientName}</div>
+                    
+                    <div className="text-gray-600">Age:</div>
+                    <div className="font-medium">{savedPrescription.age} years</div>
+                    
+                    <div className="text-gray-600">Gender:</div>
+                    <div className="font-medium">{savedPrescription.gender}</div>
+                    
+                    <div className="text-gray-600">Mobile:</div>
+                    <div className="font-medium">{savedPrescription.mobileNumber}</div>
+                    
+                    <div className="text-gray-600">Room No:</div>
+                    <div className="font-medium">{savedPrescription.roomNumber || 'd'}</div>
                   </div>
                 </div>
                 
                 <div>
-                  <h3 className="font-semibold">Hospital Information</h3>
-                  <div className="space-y-2 mt-2">
-                    <div>
-                      <span className="font-medium">Department:</span> {savedPrescription.department}
+                  <h3 className="font-bold text-gray-800 mb-3 border-b pb-2">Medical Information</h3>
+                  <div className="grid grid-cols-[120px_1fr] gap-y-2">
+                    <div className="text-gray-600">Department:</div>
+                    <div className="font-medium">{savedPrescription.department}</div>
+                    
+                    <div className="text-gray-600">Type:</div>
+                    <div className="font-medium">
+                      <span className="bg-purple-100 text-purple-800 px-2 py-0.5 rounded text-sm">
+                        {savedPrescription.type}
+                      </span>
                     </div>
-                    <div>
-                      <span className="font-medium">Type:</span> {savedPrescription.type}
-                    </div>
-                    {savedPrescription.roomNumber && (
-                      <div>
-                        <span className="font-medium">Room Number:</span> {savedPrescription.roomNumber}
-                      </div>
-                    )}
-                    {savedPrescription.aadharNumber && (
-                      <div>
-                        <span className="font-medium">Aadhar Number:</span> {savedPrescription.aadharNumber}
-                      </div>
-                    )}
-                    {savedPrescription.mobileNumber && (
-                      <div>
-                        <span className="font-medium">Mobile Number:</span> {savedPrescription.mobileNumber}
-                      </div>
-                    )}
+                    
+                    <div className="text-gray-600">Address:</div>
+                    <div className="font-medium">{savedPrescription.address || 'Near grace arjun homes.salbari Salbari.siliguri'}</div>
                   </div>
                 </div>
               </div>
-            </CardContent>
-            <CardFooter className="flex justify-between">
-              <Button variant="outline" onClick={handleCreateNew}>
-                Create New Prescription
-              </Button>
-              <Button onClick={handlePrint}>
-                Print Prescription
-              </Button>
-            </CardFooter>
+              
+              <div className="mt-6">
+                <h3 className="font-bold text-gray-800 mb-3 border-b pb-2">Prescription Details</h3>
+                <div className="border border-dashed border-gray-300 rounded-md p-6 text-center text-gray-500 italic">
+                  Prescription details and medications will be filled by the doctor.
+                </div>
+              </div>
+              
+              <div className="mt-8 flex justify-between items-end">
+                <div className="text-sm text-gray-500">
+                  <p>Generated on {new Date().toLocaleDateString()}, {new Date().toLocaleTimeString()}</p>
+                  <p>This is a computer-generated prescription.</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm text-gray-600 mb-1">Doctor's Signature</p>
+                  <div className="w-32 border-b border-gray-400"></div>
+                  <p className="text-sm text-gray-600 mt-1">Date: {new Date().toLocaleDateString()}</p>
+                </div>
+              </div>
+            </div>
           </Card>
         </div>
       ) : (
