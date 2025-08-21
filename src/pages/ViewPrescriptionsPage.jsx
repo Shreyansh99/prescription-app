@@ -10,8 +10,8 @@ import { Skeleton } from '../components/ui/skeleton';
 import { Alert, AlertDescription } from '../components/ui/alert';
 import { FormField } from '../components/ui/form-field';
 import * as XLSX from 'xlsx';
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 const ViewPrescriptionsPage = () => {
   const { toast } = useToast();
@@ -126,7 +126,6 @@ const ViewPrescriptionsPage = () => {
         'Address': prescription.address || 'N/A',
         'Aadhar Number': prescription.aadharNumber || 'N/A',
         'Mobile Number': prescription.mobileNumber || 'N/A',
-        'Medicines': prescription.medicines ? prescription.medicines.map(m => `${m.name} - ${m.dosage}`).join('; ') : 'N/A',
         'Doctor Notes': prescription.doctorNotes || 'N/A'
       }));
 
@@ -146,7 +145,6 @@ const ViewPrescriptionsPage = () => {
         { wch: 25 }, // Address
         { wch: 15 }, // Aadhar Number
         { wch: 15 }, // Mobile Number
-        { wch: 30 }, // Medicines
         { wch: 25 }  // Doctor Notes
       ];
       worksheet['!cols'] = columnWidths;
@@ -175,102 +173,112 @@ const ViewPrescriptionsPage = () => {
 
   const exportToPDF = () => {
     try {
-      const doc = new jsPDF('landscape', 'mm', 'a4');
-
-      // Add header with title
-      doc.setFontSize(20);
-      doc.setFont('helvetica', 'bold');
-      doc.text("Hospital Prescription System", 20, 20);
-
-      doc.setFontSize(14);
-      doc.setFont('helvetica', 'normal');
-      doc.text("Patient Prescriptions Report", 20, 30);
-
-      doc.setFontSize(10);
-      doc.text(`Generated on: ${new Date().toLocaleString()}`, 20, 38);
-      doc.text(`Total Records: ${filteredPrescriptions.length}`, 20, 44);
-
-      // Create a simple table manually
-      let yPosition = 60;
-      const lineHeight = 6;
-      const pageHeight = 200; // Approximate usable height
-
-      // Table headers
-      doc.setFontSize(9);
-      doc.setFont('helvetica', 'bold');
-      doc.text("Reg#", 20, yPosition);
-      doc.text("Date", 40, yPosition);
-      doc.text("Patient Name", 70, yPosition);
-      doc.text("Age", 120, yPosition);
-      doc.text("Gender", 135, yPosition);
-      doc.text("Department", 160, yPosition);
-      doc.text("Type", 200, yPosition);
-      doc.text("Mobile", 220, yPosition);
-
-      // Draw header line
-      doc.line(20, yPosition + 2, 270, yPosition + 2);
-      yPosition += 8;
-
-      // Table data
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(8);
-
-      filteredPrescriptions.forEach((prescription, index) => {
-        if (yPosition > pageHeight) {
-          doc.addPage();
-          yPosition = 20;
-
-          // Repeat headers on new page
-          doc.setFont('helvetica', 'bold');
-          doc.setFontSize(9);
-          doc.text("Reg#", 20, yPosition);
-          doc.text("Date", 40, yPosition);
-          doc.text("Patient Name", 70, yPosition);
-          doc.text("Age", 120, yPosition);
-          doc.text("Gender", 135, yPosition);
-          doc.text("Department", 160, yPosition);
-          doc.text("Type", 200, yPosition);
-          doc.text("Mobile", 220, yPosition);
-          doc.line(20, yPosition + 2, 270, yPosition + 2);
-          yPosition += 8;
-          doc.setFont('helvetica', 'normal');
-          doc.setFontSize(8);
-        }
-
-        // Alternate row background (simulate with light text for odd rows)
-        const textColor = index % 2 === 0 ? [0, 0, 0] : [64, 64, 64];
-        doc.setTextColor(...textColor);
-
-        doc.text(String(prescription.registrationNumber), 20, yPosition);
-        doc.text(formatDate(prescription.dateTime).split(',')[0], 40, yPosition);
-        doc.text(prescription.patientName.substring(0, 20), 70, yPosition);
-        doc.text(String(prescription.age), 120, yPosition);
-        doc.text(prescription.gender, 135, yPosition);
-        doc.text(prescription.department.substring(0, 15), 160, yPosition);
-        doc.text(prescription.type, 200, yPosition);
-        doc.text(prescription.mobileNumber || "N/A", 220, yPosition);
-
-        yPosition += lineHeight;
+      const doc = new jsPDF({orientation: 'landscape', unit: 'mm', format: 'a4'});
+      
+      // Set document properties for better PDF metadata
+      doc.setProperties({
+        title: 'Hospital Prescriptions Report',
+        subject: 'Patient Prescriptions',
+        author: 'Hospital Prescription System',
+        keywords: 'prescriptions, medical, report',
+        creator: 'Hospital Prescription System'
       });
-
-      // Reset text color
-      doc.setTextColor(0, 0, 0);
-
-      // Add footer
-      const pageCount = doc.internal.getNumberOfPages();
-      for (let i = 1; i <= pageCount; i++) {
-        doc.setPage(i);
+      
+      // Define reusable function for headers and footers
+      const addHeaderAndFooter = () => {
+        // Modern Header with blue background
+        doc.setFillColor(41, 98, 255); // Blue background
+        doc.rect(0, 0, 297, 15, 'F'); // Full width header bar
+        
+        // Title in white text
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(14);
+        doc.setFont('helvetica', 'bold');
+        doc.text("Hospital Prescriptions Report", 10, 10);
+        
+        // Reset text color for rest of the document
+        doc.setTextColor(0, 0, 0);
+        
+        // Add generation info
+         doc.setFontSize(9);
+         doc.setFont('helvetica', 'normal');
+         doc.text(`Generated: ${new Date().toLocaleString()}`, 200, 10);
+        
+        // Footer with page numbers only
+        const pageCount = doc.internal.getNumberOfPages();
+        const currentPage = doc.internal.getCurrentPageInfo().pageNumber;
+        
+        // Page numbers at bottom right
         doc.setFontSize(8);
-        doc.text(`Page ${i} of ${pageCount}`, 250, 190);
-        doc.text("Hospital Prescription System - Confidential", 20, 190);
-      }
-
+        doc.text(`Page ${currentPage} of ${pageCount}`, 250, 200);
+      };
+      
+      // Set callback for page drawing to ensure headers/footers on all pages
+      doc.setPage(1);
+      // Apply autoTable to the document
+      autoTable(doc, {
+        didDrawPage: addHeaderAndFooter,
+        margin: { top: 20 },
+        headStyles: { 
+          fillColor: [41, 98, 255],
+          textColor: [255, 255, 255],
+          halign: 'center',
+          fontStyle: 'bold'
+        },
+        alternateRowStyles: {
+          fillColor: [240, 247, 255] // Light blue for alternate rows
+        },
+        // Column styles with width and alignment
+         columnStyles: {
+           0: { halign: 'center', cellWidth: 20 },  // Reg No
+           1: { cellWidth: 30 },                    // Date
+           2: { cellWidth: 40 },                    // Name
+           3: { halign: 'center', cellWidth: 10 },  // Age
+           4: { halign: 'center', cellWidth: 15 },  // Gender
+           5: { cellWidth: 30 },                    // Department
+           6: { halign: 'center', cellWidth: 20 },  // Type
+           7: { cellWidth: 15 },                    // Room
+           8: { cellWidth: 25 }                     // Mobile
+         },
+        head: [[
+          'Reg. No.',
+          'Date & Time',
+          'Patient Name',
+          'Age',
+          'Gender',
+          'Department',
+          'Type',
+          'Room No.',
+          'Mobile'
+        ]],
+        body: filteredPrescriptions.map(prescription => {
+          // Format registration number with leading zeros if needed
+          const regNumber = String(prescription.registrationNumber).padStart(6, '0');
+          
+          // Format date properly
+          const formattedDate = formatDate(prescription.dateTime);
+          
+          return [
+            regNumber,
+            formattedDate,
+            prescription.patientName,
+            prescription.age,
+            prescription.gender,
+            prescription.department,
+            prescription.type,
+            prescription.roomNumber || 'N/A',
+            prescription.mobileNumber || 'N/A'
+          ];
+        }),
+        styles: { overflow: 'linebreak', cellWidth: 'auto' }
+      });
+      
       // Generate filename with current date
       const currentDate = new Date().toISOString().split('T')[0];
       const filename = `prescriptions_report_${currentDate}.pdf`;
-
+      
       doc.save(filename);
-
+      
       toast({
         title: "Success",
         description: `PDF report saved as ${filename}`,
@@ -382,14 +390,10 @@ const ViewPrescriptionsPage = () => {
                 <th>Type</th>
                 <th>Room</th>
                 <th>Mobile</th>
-                <th>Medicines</th>
               </tr>
             </thead>
             <tbody>
               ${filteredPrescriptions.map(prescription => {
-                const medicines = prescription.medicines ?
-                  prescription.medicines.map(m => `${m.name} (${m.dosage})`).join(', ') :
-                  'N/A';
 
                 return `
                   <tr>
@@ -402,7 +406,6 @@ const ViewPrescriptionsPage = () => {
                     <td style="text-align: center;">${prescription.type}</td>
                     <td style="text-align: center;">${prescription.roomNumber || 'N/A'}</td>
                     <td>${prescription.mobileNumber || 'N/A'}</td>
-                    <td>${medicines}</td>
                   </tr>
                 `;
               }).join('')}
@@ -410,8 +413,7 @@ const ViewPrescriptionsPage = () => {
           </table>
 
           <div class="footer">
-            <p>Hospital Prescription System - Confidential Document</p>
-            <p>This report contains sensitive patient information and should be handled accordingly.</p>
+            <p>Hospital Prescription System</p>
           </div>
         </body>
         </html>
