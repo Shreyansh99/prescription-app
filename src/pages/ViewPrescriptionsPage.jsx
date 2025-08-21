@@ -21,7 +21,8 @@ const ViewPrescriptionsPage = () => {
   const [filters, setFilters] = useState({
     gender: 'all',
     department: 'all',
-    type: 'all'
+    type: 'all',
+    ageGroup: 'all'
   });
 
   useEffect(() => {
@@ -63,6 +64,28 @@ const ViewPrescriptionsPage = () => {
     if (filters.type && filters.type !== 'all') {
       filtered = filtered.filter(p => p.type === filters.type);
     }
+    
+    if (filters.ageGroup && filters.ageGroup !== 'all') {
+      switch(filters.ageGroup) {
+        case 'child':
+          filtered = filtered.filter(p => parseInt(p.age) < 13);
+          break;
+        case 'teen':
+          filtered = filtered.filter(p => parseInt(p.age) >= 13 && parseInt(p.age) < 20);
+          break;
+        case 'adult':
+          filtered = filtered.filter(p => parseInt(p.age) >= 20 && parseInt(p.age) < 40);
+          break;
+        case 'middle':
+          filtered = filtered.filter(p => parseInt(p.age) >= 40 && parseInt(p.age) < 60);
+          break;
+        case 'senior':
+          filtered = filtered.filter(p => parseInt(p.age) >= 60);
+          break;
+        default:
+          break;
+      }
+    }
 
     setFilteredPrescriptions(filtered);
   };
@@ -78,7 +101,8 @@ const ViewPrescriptionsPage = () => {
     setFilters({
       gender: 'all',
       department: 'all',
-      type: 'all'
+      type: 'all',
+      ageGroup: 'all'
     });
   };
 
@@ -469,7 +493,7 @@ const ViewPrescriptionsPage = () => {
             </div>
 
             {/* Filter Dropdowns */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
               <FormField label="Gender" helpText="Filter by patient gender">
                 <Select
                   value={filters.gender}
@@ -517,6 +541,25 @@ const ViewPrescriptionsPage = () => {
                     <SelectItem value="ANC">ANC</SelectItem>
                     <SelectItem value="General">General</SelectItem>
                     <SelectItem value="JSSK">JSSK</SelectItem>
+                  </SelectContent>
+                </Select>
+              </FormField>
+              
+              <FormField label="Age Group" helpText="Filter by patient age range">
+                <Select
+                  value={filters.ageGroup}
+                  onValueChange={(value) => handleFilterChange('ageGroup', value)}
+                >
+                  <SelectTrigger className="transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <SelectValue placeholder="All Age Groups" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Age Groups</SelectItem>
+                    <SelectItem value="child">Children (0-12)</SelectItem>
+                    <SelectItem value="teen">Teenagers (13-19)</SelectItem>
+                    <SelectItem value="adult">Adults (20-39)</SelectItem>
+                    <SelectItem value="middle">Middle-aged (40-59)</SelectItem>
+                    <SelectItem value="senior">Seniors (60+)</SelectItem>
                   </SelectContent>
                 </Select>
               </FormField>

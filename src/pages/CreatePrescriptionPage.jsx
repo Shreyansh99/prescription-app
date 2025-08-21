@@ -154,6 +154,24 @@ const CreatePrescriptionPage = () => {
     setShowSummary(false);
     setSavedPrescription(null);
   };
+  
+  const handleNavigateToCreate = () => {
+    // Just reset the form to navigate to create prescription
+    setFormData({
+      patientName: '',
+      age: '',
+      gender: '',
+      department: '',
+      type: '',
+      roomNumber: '',
+      address: '',
+      aadharNumber: '',
+      mobileNumber: '',
+    });
+    setErrors({});
+    setShowSummary(false);
+    setSavedPrescription(null);
+  };
 
   // Format date for display
   const formatDate = (dateString) => {
@@ -169,11 +187,11 @@ const CreatePrescriptionPage = () => {
         <div className="grid grid-cols-1 gap-6">
           {/* Navigation Buttons */}
           <div className="flex justify-between mb-4">
-            <Button variant="outline" onClick={handleCreateNew} className="px-4 flex items-center gap-2">
+            <Button variant="outline" onClick={handleNavigateToCreate} className="px-4 flex items-center gap-2">
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clipRule="evenodd" />
+                <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
               </svg>
-              Back to Form
+              Create Prescription
             </Button>
             <Button onClick={handlePrint} className="bg-blue-600 hover:bg-blue-700 px-4 flex items-center gap-2">
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
