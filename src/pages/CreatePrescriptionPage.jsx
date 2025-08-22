@@ -417,9 +417,25 @@ const CreatePrescriptionPage = () => {
                         <SelectValue placeholder="Select department" />
                       </SelectTrigger>
                       <SelectContent className="min-w-[250px] border-blue-300">
+                        <SelectItem value="Cardiology" className="hover:bg-blue-100 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white">Cardiology</SelectItem>
+                        <SelectItem value="Cardiologist" className="hover:bg-blue-100 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white">Cardiologist</SelectItem>
+                        <SelectItem value="Dental" className="hover:bg-blue-100 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white">Dental</SelectItem>
+                        <SelectItem value="Dermatology" className="hover:bg-blue-100 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white">Dermatology</SelectItem>
+                        <SelectItem value="ENT" className="hover:bg-blue-100 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white">ENT</SelectItem>
+                        <SelectItem value="General Physician" className="hover:bg-blue-100 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white">General Physician</SelectItem>
+                        <SelectItem value="Gynecology" className="hover:bg-blue-100 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white">Gynecology</SelectItem>
+                        <SelectItem value="Lab" className="hover:bg-blue-100 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white">Lab</SelectItem>
+                        <SelectItem value="Neurology" className="hover:bg-blue-100 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white">Neurology</SelectItem>
                         <SelectItem value="OPD" className="hover:bg-blue-100 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white">OPD (Outpatient Department)</SelectItem>
-                        <SelectItem value="IPD" className="hover:bg-blue-100 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white">IPD (Inpatient Department)</SelectItem>
-                        <SelectItem value="Emergency" className="hover:bg-blue-100 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white">Emergency</SelectItem>
+                        <SelectItem value="Oncology" className="hover:bg-blue-100 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white">Oncology</SelectItem>
+                        <SelectItem value="OT Major" className="hover:bg-blue-100 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white">OT Major</SelectItem>
+                        <SelectItem value="OT Minor" className="hover:bg-blue-100 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white">OT Minor</SelectItem>
+                        <SelectItem value="Pediatrics" className="hover:bg-blue-100 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white">Pediatrics</SelectItem>
+                        <SelectItem value="Psychiatry" className="hover:bg-blue-100 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white">Psychiatry</SelectItem>
+                        <SelectItem value="Radiology" className="hover:bg-blue-100 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white">Radiology</SelectItem>
+                        <SelectItem value="Surgeon" className="hover:bg-blue-100 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white">Surgeon</SelectItem>
+                        <SelectItem value="Urology" className="hover:bg-blue-100 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white">Urology</SelectItem>
+                        <SelectItem value="X-Ray" className="hover:bg-blue-100 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white">X-Ray</SelectItem>
                       </SelectContent>
                     </Select>
                   </FormField>
@@ -435,6 +451,7 @@ const CreatePrescriptionPage = () => {
                       </SelectTrigger>
                       <SelectContent className="min-w-[150px] border-blue-300">
                         <SelectItem value="ANC" className="hover:bg-blue-100 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white">ANC</SelectItem>
+                        <SelectItem value="FREEDOM FIGHTER" className="hover:bg-blue-100 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white">FREEDOM FIGHTER</SelectItem>
                         <SelectItem value="General" className="hover:bg-blue-100 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white">General</SelectItem>
                         <SelectItem value="JSSK" className="hover:bg-blue-100 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white">JSSK</SelectItem>
                       </SelectContent>
