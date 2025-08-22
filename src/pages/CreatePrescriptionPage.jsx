@@ -211,92 +211,143 @@ const CreatePrescriptionPage = () => {
           {/* Prescription Summary */}
           <Card className="prescription-summary bg-white shadow-md border border-gray-200">
             <div className="flex justify-between items-center p-4 bg-blue-50 border-b border-gray-200">
-              <div className="flex items-center gap-3">
-                <div className="text-blue-600">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM18 19H6C5.45 19 5 18.55 5 18V6C5 5.45 5.45 5 6 5H18C18.55 5 19 5.45 19 6V18C19 18.55 18.55 19 18 19Z" fill="currentColor"/>
-                    <path d="M12 17C14.7614 17 17 14.7614 17 12C17 9.23858 14.7614 7 12 7C9.23858 7 7 9.23858 7 12C7 14.7614 9.23858 17 12 17Z" fill="currentColor"/>
-                  </svg>
-                </div>
-                <div>
-                  <h2 className="text-lg font-bold text-gray-900">City General Hospital</h2>
-                  <p className="text-sm text-gray-600">Healthcare Excellence Since 1985</p>
-                </div>
+              <div className="flex-1 text-center">
+                <p className="text-red-600 font-bold">गर्भ में लड़का-लड़की का पता करना गैर कानूनी है।</p>
               </div>
-              <div className="text-right">
-                <p className="text-sm font-medium text-gray-600">NO. {String(savedPrescription.registrationNumber).padStart(6, '0')}</p>
+            </div>
+            <div className="flex justify-between items-center p-4 bg-red-600 border-b border-gray-200">
+              <div className="flex-1 text-center">
+                <p className="text-white font-bold">उप जिला चिकित्सालय प्रेमनगर, देहरादून</p>
               </div>
             </div>
             
             <div className="p-6">
-              <div className="text-center mb-6">
-                <h1 className="text-2xl font-bold text-gray-900 uppercase">PRESCRIPTION</h1>
-                <p className="text-sm text-gray-600 mt-1">Date: {formatDate(savedPrescription.dateTime)}</p>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div className="border-b pb-4 md:border-b-0 md:border-r md:pr-6">
-                  <h3 className="font-bold text-gray-800 mb-3 border-b pb-2">Patient Information</h3>
-                  <div className="grid grid-cols-[120px_1fr] gap-y-2">
-                    <div className="text-gray-600">Name:</div>
-                    <div className="font-medium">{savedPrescription.patientName}</div>
-                    
-                    <div className="text-gray-600">Age:</div>
-                    <div className="font-medium">{savedPrescription.age} years</div>
-                    
-                    <div className="text-gray-600">Gender:</div>
-                    <div className="font-medium">{savedPrescription.gender}</div>
-                    
-                    <div className="text-gray-600">Mobile:</div>
-                    <div className="font-medium">{savedPrescription.mobileNumber}</div>
-                    
-                    <div className="text-gray-600">Room No:</div>
-                    <div className="font-medium">{savedPrescription.roomNumber || 'N/A'}</div>
-                    
-                    <div className="text-gray-600">Payment:</div>
-                    <div className="font-medium">
-                      <span className="bg-green-100 text-green-800 px-2 py-0.5 rounded text-sm">
-                        {savedPrescription.paymentMethod}
-                      </span>
-                    </div>
+              <div className="flex justify-between items-start mb-6">
+                <div className="flex-1">
+                  <div className="border border-gray-300 inline-block p-2">
+                    <h2 className="text-lg font-bold">H</h2>
                   </div>
                 </div>
-                
-                <div>
-                  <h3 className="font-bold text-gray-800 mb-3 border-b pb-2">Medical Information</h3>
+                <div className="flex-1 text-center">
+                  <h1 className="text-xl font-bold text-gray-900">बाह्य रोगी कार्ड</h1>
+                  <p className="text-sm text-gray-600 mt-1">(यह पर्ची केवल 15 दिन के लिए वैध है)</p>
+                </div>
+                <div className="flex-1 text-right">
+                  <p className="text-sm font-medium text-gray-600">पंजीकरण शुल्क</p>
+                  <p className="text-lg font-bold">{String(savedPrescription.registrationNumber).padStart(5, '0')}</p>
+                  <div className="mt-2">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Seal_of_Uttarakhand.svg/100px-Seal_of_Uttarakhand.svg.png" 
+                         alt="Uttarakhand Logo" 
+                         className="h-12 ml-auto" />
+                  </div>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 gap-4 mb-6">
+                <div className="border-b pb-4">
                   <div className="grid grid-cols-[120px_1fr] gap-y-2">
-                    <div className="text-gray-600">Department:</div>
-                    <div className="font-medium">{savedPrescription.department}</div>
+                    <div className="text-gray-600">रजि. नं.:</div>
+                    <div className="font-medium border-b border-gray-300"></div>
                     
-                    <div className="text-gray-600">Type:</div>
-                    <div className="font-medium">
-                      <span className="bg-purple-100 text-purple-800 px-2 py-0.5 rounded text-sm">
-                        {savedPrescription.type}
-                      </span>
-                    </div>
+                    <div className="text-gray-600">दिनांक:</div>
+                    <div className="font-medium border-b border-gray-300"></div>
                     
-                    <div className="text-gray-600">Address:</div>
-                    <div className="font-medium">{savedPrescription.address || 'Near grace arjun homes.salbari Salbari.siliguri'}</div>
+                    <div className="text-gray-600">समय:</div>
+                    <div className="font-medium border-b border-gray-300"></div>
+                    
+                    <div className="text-gray-600">रोगी का नाम:</div>
+                    <div className="font-medium border-b border-gray-300">{savedPrescription.patientName}</div>
+                    
+                    <div className="text-gray-600">रोगी का पता:</div>
+                    <div className="font-medium border-b border-gray-300">{savedPrescription.address || 'N/A'}</div>
+                    
+                    <div className="text-gray-600">फोन नं0:</div>
+                    <div className="font-medium border-b border-gray-300">{savedPrescription.mobileNumber}</div>
+                    
+                    <div className="text-gray-600">आयु:</div>
+                    <div className="font-medium border-b border-gray-300">{savedPrescription.age}</div>
+                    
+                    <div className="text-gray-600">लिंग:</div>
+                    <div className="font-medium border-b border-gray-300">{savedPrescription.gender}</div>
+                    
+                    <div className="text-gray-600">आधार नं0:</div>
+                    <div className="font-medium border-b border-gray-300">{savedPrescription.aadharNumber || 'N/A'}</div>
                   </div>
                 </div>
               </div>
               
               <div className="mt-6">
-                <h3 className="font-bold text-gray-800 mb-3 border-b pb-2">Prescription Details</h3>
-                <div className="border border-dashed border-gray-300 rounded-md p-6 text-center text-gray-500 italic">
-                  Prescription details and medications will be filled by the doctor.
+                <table className="w-full border-collapse">
+                  <thead>
+                    <tr>
+                      <th className="border border-gray-400 p-2 text-left">वजन / कद</th>
+                      <th className="border border-gray-400 p-2 text-left">Presenting Complaints/शिकायत</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td className="border border-gray-400 p-2 h-10"></td>
+                      <td className="border border-gray-400 p-2 h-10"></td>
+                    </tr>
+                  </tbody>
+                </table>
+                
+                <table className="w-full border-collapse mt-4">
+                  <thead>
+                    <tr>
+                      <th className="border border-gray-400 p-2 text-left">रक्त चाप</th>
+                      <td className="border border-gray-400 p-2 h-10"></td>
+                    </tr>
+                  </thead>
+                </table>
+                
+                <table className="w-full border-collapse mt-4">
+                  <thead>
+                    <tr>
+                      <th className="border border-gray-400 p-2 text-left">शर्करा</th>
+                      <td className="border border-gray-400 p-2 h-10"></td>
+                    </tr>
+                  </thead>
+                </table>
+                
+                <table className="w-full border-collapse mt-4">
+                  <thead>
+                    <tr>
+                      <th className="border border-gray-400 p-2 text-left">अन्य (परमर्शदाता)</th>
+                      <td className="border border-gray-400 p-2 h-10"></td>
+                    </tr>
+                  </thead>
+                </table>
+                
+                <div className="mt-4">
+                  <p className="font-bold">Provisional / Final Diagnosis :</p>
+                  <div className="border-b border-gray-400 h-8 mt-2"></div>
                 </div>
-              </div>
-              
-              <div className="mt-8 flex justify-between items-end">
-                <div className="text-sm text-gray-500">
-                  <p>Generated on {new Date().toLocaleDateString()}, {new Date().toLocaleTimeString()}</p>
-                  <p>This is a computer-generated prescription.</p>
+                
+                <div className="mt-4">
+                  <div className="flex">
+                    <div className="w-1/3 border-r border-gray-400">
+                      <p className="font-bold">परीक्षण / जाँच</p>
+                    </div>
+                    <div className="w-2/3">
+                      <p className="font-bold">दवा का नाम (जहां तक संभव हो सामान्य रसायनिक नाम बड़े अक्षरों में ) अवधि एवं खुराक</p>
+                    </div>
+                  </div>
+                  <div className="flex h-64">
+                    <div className="w-1/3 border-r border-t border-gray-400"></div>
+                    <div className="w-2/3 border-t border-gray-400"></div>
+                  </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-sm text-gray-600 mb-1">Doctor's Signature</p>
-                  <div className="w-32 border-b border-gray-400"></div>
-                  <p className="text-sm text-gray-600 mt-1">Date: {new Date().toLocaleDateString()}</p>
+                
+                <div className="mt-8 text-right">
+                  <p className="text-sm text-gray-600 mb-1">चिकित्सक के हस्ताक्षर एवं तिथि</p>
+                  <p className="text-sm text-gray-600 mb-1">(नाम एवं पदनाम की मुहर)</p>
+                  <div className="w-32 border-b border-gray-400 ml-auto"></div>
+                </div>
+                
+                <div className="mt-8 text-center text-xs border-t border-gray-300 pt-2">
+                  <p>चिकित्सालय परिसर में धूम्रपान व मद्यपान वर्जित क्षेत्र है कृपया इसे साफ रखने में सहयोग करें</p>
+                  <p className="mt-1">नोट: जन्म, मृत्यु रजिस्ट्रेशन घटना के 21 दिन के अन्तर्गत निःशुल्क है। रजिस्ट्रेशन समय सीमा के अन्तर्गत निःशुल्क कराये।</p>
                 </div>
               </div>
             </div>

@@ -317,6 +317,28 @@ const ViewPrescriptionsPage = () => {
               margin: 5px 0;
               color: #666;
             }
+            .hindi-header {
+              color: #fff;
+              background-color: #dc2626;
+              padding: 8px;
+              text-align: center;
+              font-weight: bold;
+              margin-bottom: 10px;
+            }
+            .warning {
+              color: #dc2626;
+              font-weight: bold;
+              text-align: center;
+              margin-bottom: 10px;
+            }
+            .logo-container {
+              display: flex;
+              justify-content: flex-end;
+              margin-bottom: 10px;
+            }
+            .logo {
+              height: 50px;
+            }
             .info {
               margin-bottom: 20px;
               font-size: 12px;
@@ -360,6 +382,12 @@ const ViewPrescriptionsPage = () => {
           </style>
         </head>
         <body>
+          <div class="warning">गर्भ में लड़का-लड़की का पता करना गैर कानूनी है।</div>
+          <div class="hindi-header">उप जिला चिकित्सालय प्रेमनगर, देहरादून</div>
+          <div class="logo-container">
+            <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Seal_of_Uttarakhand.svg/100px-Seal_of_Uttarakhand.svg.png" alt="Uttarakhand Logo">
+          </div>
+          
           <div class="header">
             <h1>Hospital Prescription System</h1>
             <p>Patient Prescriptions Report</p>
@@ -412,6 +440,7 @@ const ViewPrescriptionsPage = () => {
           <div class="footer">
             <p>Hospital Prescription System - Confidential Document</p>
             <p>This report contains sensitive patient information and should be handled accordingly.</p>
+            <p>चिकित्सालय परिसर में धूम्रपान व मद्यपान वर्जित क्षेत्र है कृपया इसे साफ रखने में सहयोग करें</p>
           </div>
         </body>
         </html>
