@@ -3,12 +3,14 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
+import { MultiSelect } from '../components/ui/multi-select';
 import { useToast } from '../components/ui/use-toast';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table';
 import { Badge } from '../components/ui/badge';
 import { Skeleton } from '../components/ui/skeleton';
 import { Alert, AlertDescription } from '../components/ui/alert';
 import { FormField } from '../components/ui/form-field';
+import PrescriptionDetailDialog from '../components/PrescriptionDetailDialog';
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
@@ -19,11 +21,16 @@ const ViewPrescriptionsPage = () => {
   const [filteredPrescriptions, setFilteredPrescriptions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({
-    gender: 'all',
+    gender: [],
     department: 'all',
-    type: 'all',
-    ageGroup: 'all'
+    type: [],
+    ageGroup: 'all',
+    fromDate: '',
+    toDate: '',
+    searchText: ''
   });
+  const [selectedPrescription, setSelectedPrescription] = useState(null);
+  const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
 
   useEffect(() => {
     loadPrescriptions();
@@ -53,16 +60,48 @@ const ViewPrescriptionsPage = () => {
   const applyFilters = () => {
     let filtered = [...prescriptions];
 
-    if (filters.gender && filters.gender !== 'all') {
-      filtered = filtered.filter(p => p.gender === filters.gender);
+    // Search text filter
+    if (filters.searchText && filters.searchText.trim()) {
+      const searchTerm = filters.searchText.toLowerCase().trim();
+      filtered = filtered.filter(p => 
+        p.patientName?.toLowerCase().includes(searchTerm) ||
+        p.registrationNumber?.toString().includes(searchTerm) ||
+        p.address?.toLowerCase().includes(searchTerm) ||
+        p.mobileNumber?.includes(searchTerm) ||
+        p.aadharNumber?.includes(searchTerm)
+      );
+    }
+
+    // Date range filter
+    if (filters.fromDate) {
+      const fromDate = new Date(filters.fromDate);
+      fromDate.setHours(0, 0, 0, 0);
+      filtered = filtered.filter(p => {
+        const prescriptionDate = new Date(p.dateTime);
+        prescriptionDate.setHours(0, 0, 0, 0);
+        return prescriptionDate >= fromDate;
+      });
+    }
+
+    if (filters.toDate) {
+      const toDate = new Date(filters.toDate);
+      toDate.setHours(23, 59, 59, 999);
+      filtered = filtered.filter(p => {
+        const prescriptionDate = new Date(p.dateTime);
+        return prescriptionDate <= toDate;
+      });
+    }
+
+    if (filters.gender && filters.gender.length > 0) {
+      filtered = filtered.filter(p => filters.gender.includes(p.gender));
     }
 
     if (filters.department && filters.department !== 'all') {
       filtered = filtered.filter(p => p.department === filters.department);
     }
 
-    if (filters.type && filters.type !== 'all') {
-      filtered = filtered.filter(p => p.type === filters.type);
+    if (filters.type && filters.type.length > 0) {
+      filtered = filtered.filter(p => filters.type.includes(p.type));
     }
     
     if (filters.ageGroup && filters.ageGroup !== 'all') {
@@ -99,12 +138,39 @@ const ViewPrescriptionsPage = () => {
 
   const resetFilters = () => {
     setFilters({
-      gender: 'all',
+      gender: [],
       department: 'all',
-      type: 'all',
-      ageGroup: 'all'
+      type: [],
+      ageGroup: 'all',
+      fromDate: '',
+      toDate: '',
+      searchText: ''
     });
   };
+
+  const handlePrescriptionClick = (prescription) => {
+    setSelectedPrescription(prescription);
+    setIsDetailDialogOpen(true);
+  };
+
+  const handleCloseDetailDialog = () => {
+    setIsDetailDialogOpen(false);
+    setSelectedPrescription(null);
+  };
+
+  // Multi-select options
+  const genderOptions = [
+    { value: 'Male', label: 'Male' },
+    { value: 'Female', label: 'Female' },
+    { value: 'Others', label: 'Others' }
+  ];
+
+  const typeOptions = [
+    { value: 'ANC', label: 'ANC' },
+    { value: 'FREEDOM FIGHTER', label: 'Freedom Fighter' },
+    { value: 'General', label: 'General' },
+    { value: 'JSSK', label: 'JSSK' }
+  ];
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -382,10 +448,32 @@ const ViewPrescriptionsPage = () => {
           </style>
         </head>
         <body>
-          <div class="warning">गर्भ में लड़का-लड़की का पता करना गैर कानूनी है।</div>
-          <div class="hindi-header">उप जिला चिकित्सालय प्रेमनगर, देहरादून</div>
-          <div class="logo-container">
-            <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Seal_of_Uttarakhand.svg/100px-Seal_of_Uttarakhand.svg.png" alt="Uttarakhand Logo">
+          <div style="background: white; padding: 0; position: relative; border-bottom: 2px solid #8B0000; margin-bottom: 20px;">
+            <div style="text-align: center; padding: 8px; background: white; color: #8B0000; font-weight: 500; font-size: 12px; border-bottom: 1px solid #ddd;">
+              गर्भ में लड़का-लड़की का पता करना गैर कानूनी है।
+            </div>
+            
+            <div style="text-align: center; padding: 15px 20px; background: #8B0000; color: white; font-weight: 600; font-size: 18px;">
+              उप जिला चिकित्सालय प्रेमनगर, देहरादून
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: white; border-bottom: 1px solid #ddd;">
+              <div>
+                <div style="font-size: 18px; font-weight: 600; color: #333;">बाह्य रोगी कार्ड</div>
+                <div style="font-size: 12px; color: #666; margin-top: 2px;">(यह पर्ची केवल 15 दिन के लिए वैध है)</div>
+              </div>
+              
+              <div style="text-align: center; font-size: 12px; color: #333;">
+                Registration Fee
+                <div style="border: 2px solid #8B0000; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; margin: 4px auto 0; font-weight: bold; font-size: 14px; color: #8B0000;">
+                  ₹20
+                </div>
+              </div>
+            </div>
+            
+            <div style="position: absolute; top: 15px; right: 20px; width: 70px; height: 70px; background: white; padding: 5px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); z-index: 10;">
+              <div style="display: flex; align-items: center; justify-content: center; height: 100%; font-size: 10px; text-align: center; color: #333;">उत्तराखंड<br>राज्य</div>
+            </div>
           </div>
           
           <div class="header">
@@ -410,6 +498,7 @@ const ViewPrescriptionsPage = () => {
                 <th>Type</th>
                 <th>Room</th>
                 <th>Mobile</th>
+                <th>Payment</th>
                 <th>Medicines</th>
               </tr>
             </thead>
@@ -430,6 +519,7 @@ const ViewPrescriptionsPage = () => {
                     <td style="text-align: center;">${prescription.type}</td>
                     <td style="text-align: center;">${prescription.roomNumber || 'N/A'}</td>
                     <td>${prescription.mobileNumber || 'N/A'}</td>
+                    <td style="text-align: center;">${prescription.paymentMethod || 'N/A'}</td>
                     <td>${medicines}</td>
                   </tr>
                 `;
@@ -500,6 +590,8 @@ const ViewPrescriptionsPage = () => {
                 <Input
                   type="text"
                   placeholder="Search by name, registration number, or details..."
+                  value={filters.searchText}
+                  onChange={(e) => handleFilterChange('searchText', e.target.value)}
                   className="transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
               </FormField>
@@ -510,12 +602,16 @@ const ViewPrescriptionsPage = () => {
               <FormField label="From Date" helpText="Select start date for filtering">
                 <Input
                   type="date"
+                  value={filters.fromDate}
+                  onChange={(e) => handleFilterChange('fromDate', e.target.value)}
                   className="transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
               </FormField>
               <FormField label="To Date" helpText="Select end date for filtering">
                 <Input
                   type="date"
+                  value={filters.toDate}
+                  onChange={(e) => handleFilterChange('toDate', e.target.value)}
                   className="transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
               </FormField>
@@ -523,21 +619,14 @@ const ViewPrescriptionsPage = () => {
 
             {/* Filter Dropdowns */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-              <FormField label="Gender" helpText="Filter by patient gender">
-                <Select
+              <FormField label="Gender" helpText="Filter by patient gender (multiple selection)">
+                <MultiSelect
+                  options={genderOptions}
                   value={filters.gender}
-                  onValueChange={(value) => handleFilterChange('gender', value)}
-                >
-                  <SelectTrigger className="transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                    <SelectValue placeholder="All Genders" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Genders</SelectItem>
-                    <SelectItem value="Male">Male</SelectItem>
-                    <SelectItem value="Female">Female</SelectItem>
-                    <SelectItem value="Others">Others</SelectItem>
-                  </SelectContent>
-                </Select>
+                  onChange={(value) => handleFilterChange('gender', value)}
+                  placeholder="Select genders..."
+                  className="transition-all duration-200"
+                />
               </FormField>
 
               <FormField label="Department" helpText="Filter by hospital department">
@@ -573,22 +662,14 @@ const ViewPrescriptionsPage = () => {
                 </Select>
               </FormField>
 
-              <FormField label="Type" helpText="Filter by prescription type">
-                <Select
+              <FormField label="Type" helpText="Filter by prescription type (multiple selection)">
+                <MultiSelect
+                  options={typeOptions}
                   value={filters.type}
-                  onValueChange={(value) => handleFilterChange('type', value)}
-                >
-                  <SelectTrigger className="transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                    <SelectValue placeholder="All Types" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Types</SelectItem>
-                    <SelectItem value="ANC">ANC</SelectItem>
-                    <SelectItem value="FREEDOM FIGHTER">FREEDOM FIGHTER</SelectItem>
-                    <SelectItem value="General">General</SelectItem>
-                    <SelectItem value="JSSK">JSSK</SelectItem>
-                  </SelectContent>
-                </Select>
+                  onChange={(value) => handleFilterChange('type', value)}
+                  placeholder="Select types..."
+                  className="transition-all duration-200"
+                />
               </FormField>
               
               <FormField label="Age Group" helpText="Filter by patient age range">
@@ -743,7 +824,12 @@ const ViewPrescriptionsPage = () => {
                 </TableHeader>
                 <TableBody>
                   {filteredPrescriptions.map((prescription, index) => (
-                    <TableRow key={prescription.registrationNumber} className={`hover:bg-gray-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-25'}`}>
+                    <TableRow 
+                      key={prescription.registrationNumber} 
+                      className={`hover:bg-blue-50 transition-colors cursor-pointer ${index % 2 === 0 ? 'bg-white' : 'bg-gray-25'}`}
+                      onClick={() => handlePrescriptionClick(prescription)}
+                      title="Click to view prescription details"
+                    >
                       <TableCell className="font-medium text-blue-600">{prescription.registrationNumber}</TableCell>
                       <TableCell className="font-medium">{prescription.patientName}</TableCell>
                       <TableCell>{prescription.age}</TableCell>
@@ -771,6 +857,13 @@ const ViewPrescriptionsPage = () => {
             )}
           </div>
         </div>
+
+        {/* Prescription Detail Dialog */}
+        <PrescriptionDetailDialog
+          prescription={selectedPrescription}
+          isOpen={isDetailDialogOpen}
+          onClose={handleCloseDetailDialog}
+        />
       </div>
     </div>
   );
